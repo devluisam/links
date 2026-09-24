@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#05060d">
+
+  <!--
+    SEO + Open Graph.
+    Estas tags precisam ficar no HTML (WhatsApp/Instagram não executam JavaScript
+    ao gerar a prévia do link). Troque título, descrição e a URL do seu domínio.
+  -->
+  <title>devluisam · links</title>
+  <meta name="description" content="Todos os meus links, música e status em um só lugar.">
+  <link rel="canonical" href="https://devluisam.github.io/links/">
+
+  <meta property="og:type" content="profile">
+  <meta property="og:site_name" content="devluisam">
+  <meta property="og:title" content="devluisam · links">
+  <meta property="og:description" content="Todos os meus links, música e status em um só lugar.">
+  <meta property="og:url" content="https://devluisam.github.io/links/">
+  <meta property="og:image" content="https://devluisam.github.io/links/assets/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Prévia do perfil devluisam">
+  <meta property="og:locale" content="pt_BR">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="devluisam · links">
+  <meta name="twitter:description" content="Todos os meus links, música e status em um só lugar.">
+  <meta name="twitter:image" content="https://devluisam.github.io/links/assets/og-image.jpg">
+
+  <!-- Favicons -->
+  <!-- Favicons: monograma "LD" em letra de assinatura (French Script), azul, sem fundo.
+       ?v= força o navegador a buscar a versão nova. -->
+  <link rel="icon" href="assets/favicon.svg?v=3" type="image/svg+xml">
+  <link rel="icon" href="assets/favicon.ico?v=3" sizes="16x16 32x32 48x48">
+  <link rel="icon" href="assets/favicon-32.png?v=3" sizes="32x32" type="image/png">
+  <link rel="icon" href="assets/favicon-192.png?v=3" sizes="192x192" type="image/png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=3">
+
+  <!-- Imagens usadas logo de cara: pede cedo ao navegador -->
+  <link rel="preload" href="assets/background.webp" as="image" type="image/webp">
+
+  <link rel="stylesheet" href="style.css?v=28">
+  <script src="script.js?v=28" defer></script>
+</head>
+<body>
+  <!-- ===== Tela de entrada (splash) ===== -->
+  <!-- O vídeo já roda por trás, desfocado; ao entrar, o desfoque some -->
+  <button id="splash" class="splash" type="button" aria-label="Entrar no perfil e iniciar a música">
+    <span class="splash__centro">
+      <span class="splash__anel" aria-hidden="true"></span>
+      <span class="splash__anel splash__anel--2" aria-hidden="true"></span>
+      <img class="splash__avatar" id="splash-avatar" src="" alt="" width="84" height="84" decoding="async">
+    </span>
+    <span class="splash__texto" id="splash-texto">clique para entrar</span>
+    <span class="splash__dica"><span class="icone icone--volume" aria-hidden="true"></span> melhor com som</span>
+  </button>
+
+  <!-- ===== Fundo: vídeo em loop + imagem de fallback + overlay escuro ===== -->
+  <div class="fundo" aria-hidden="true">
+    <video id="video-fundo" class="fundo__video" muted loop playsinline preload="metadata"></video>
+    <div class="fundo__overlay"></div>
+  </div>
+
+  <!-- Partículas de neve -->
+  <canvas id="neve" class="neve" aria-hidden="true"></canvas>
+
+  <!-- Música de fundo (só começa após o clique no splash) -->
+  <audio id="musica" loop preload="none"></audio>
+
+  <!-- ===== Controle de volume (canto superior esquerdo) ===== -->
+  <div class="volume" id="volume">
+    <button id="btn-mudo" class="volume__botao" type="button" aria-label="Silenciar música" aria-pressed="false">
+      <span class="icone icone--volume" aria-hidden="true"></span>
+    </button>
+    <label class="sr-only" for="slider-volume">Volume da música</label>
+    <input id="slider-volume" class="volume__slider" type="range" min="0" max="100" step="1" value="30">
+  </div>
+
+  <!-- ===== Conteúdo principal ===== -->
+  <main id="conteudo" class="palco" inert>
+    <article class="card" id="card">
+      <!-- Perfil -->
+      <header class="perfil">
+        <div class="avatar" data-entrada style="--i:0">
+          <img id="avatar" class="avatar__img" src="" alt="" width="128" height="128" decoding="async">
+        </div>
+        <h1 class="nome" id="nome" data-entrada style="--i:1" aria-label=""><span id="nome-texto"></span><span class="nome__cursor" aria-hidden="true"></span></h1>
+        <p class="uid" id="uid" data-entrada style="--i:2"></p>
+        <p class="bio" id="bio" data-entrada style="--i:3"></p>
+        <p class="local" id="local" data-entrada style="--i:4">
+          <span class="icone icone--pin" aria-hidden="true"></span>
+          <span id="local-texto"></span>
+        </p>
+      </header>
+
+      <!-- Status do Discord (preenchido pelo Lanyard) -->
+      <section class="discord" id="discord" data-entrada style="--i:5" aria-live="polite" aria-label="Status no Discord">
+        <div class="discord__avatar">
+          <img id="dc-avatar" src="assets/avatar.webp" alt="" width="48" height="48" decoding="async">
+          <span class="discord__bolinha" id="dc-bolinha" data-status="offline"></span>
+        </div>
+        <div class="discord__info">
+          <p class="discord__nome" id="dc-nome">Discord</p>
+          <p class="discord__status" id="dc-status">status indisponível</p>
+          <p class="discord__atividade" id="dc-atividade" hidden></p>
+        </div>
+        <img class="discord__arte" id="dc-arte" src="" alt="" width="44" height="44" hidden>
+      </section>
+
+      <!-- Redes sociais (links vêm do CONFIG no script.js) -->
+      <nav class="redes" aria-label="Redes sociais">
+        <ul class="redes__lista" id="redes"></ul>
+      </nav>
+
+      <!-- Player da música (título, capa e artista vêm do CONFIG) -->
+      <section class="player" id="player" data-entrada style="--i:14" aria-label="Música tocando">
+        <div class="player__capa">
+          <img id="player-capa" src="" alt="" width="56" height="56" decoding="async">
+          <!-- barrinhas de equalizador: dançam enquanto toca -->
+          <span class="player__eq" aria-hidden="true"><i></i><i></i><i></i></span>
+        </div>
+        <div class="player__info">
+          <p class="player__titulo" id="player-titulo"></p>
+          <p class="player__artista" id="player-artista"></p>
+          <input class="player__progresso" id="player-progresso" type="range" min="0" max="1000" step="1" value="0" aria-label="Posição da música">
+          <div class="player__tempos"><span id="player-atual">0:00</span><span id="player-total">0:00</span></div>
+        </div>
+        <button class="player__botao" id="player-play" type="button" aria-label="Pausar música">
+          <span class="icone icone--pause" aria-hidden="true"></span>
+          <span class="icone icone--play" aria-hidden="true"></span>
+        </button>
+      </section>
+
+      <!-- Rodapé: contador de visualizações -->
+      <footer class="rodape">
+        <p class="views" id="views" hidden>
+          <span class="icone icone--olho" aria-hidden="true"></span>
+          <span id="views-numero"></span>
+          <span class="sr-only">visualizações</span>
+        </p>
+      </footer>
+    </article>
+  </main>
+
+  <!-- Aviso rápido ("Copiado!") -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- Cursor personalizado (só em mouse; criado/ativado pelo script) -->
+  <div class="cursor" id="cursor" aria-hidden="true"></div>
+
+  <noscript>
+    <style>.splash { display: none; } .palco { opacity: 1; transform: none; }</style>
+    <p class="noscript">Ative o JavaScript para ver este perfil completo.</p>
+  </noscript>
+</body>
+</html>

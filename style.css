@@ -1,0 +1,852 @@
+/* ==========================================================
+   Bio link — estilos
+   Mobile-first: o CSS base é para celular; os @media ampliam.
+   As cores de destaque (--accent / --accent-2) são definidas
+   pelo CONFIG no script.js — os valores aqui são só o padrão.
+   ========================================================== */
+
+:root {
+  --accent: #3b82f6;          /* azul */
+  --accent-2: #60a5fa;        /* azul claro */
+  --texto: #eef1ff;
+  --texto-suave: #aab2d0;
+  --fundo: #05060d;
+  --vidro: rgba(10, 12, 26, 0.5);
+  --borda-vidro: rgba(255, 255, 255, 0.09);
+  --raio: 22px;
+  --fonte: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Versões translúcidas do destaque (usadas em glows) */
+  --accent-30: color-mix(in srgb, var(--accent) 30%, transparent);
+  --accent-55: color-mix(in srgb, var(--accent) 55%, transparent);
+  --accent2-30: color-mix(in srgb, var(--accent-2) 30%, transparent);
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  font-family: var(--fonte);
+  color: var(--texto);
+  background: var(--fundo) url("assets/background.webp") center / cover no-repeat fixed;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+img { display: block; max-width: 100%; }
+[hidden] { display: none !important; }
+p { margin: 0; }
+
+/* Texto só para leitores de tela */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* Foco visível e consistente para quem navega pelo teclado */
+:focus-visible {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 3px;
+  border-radius: 10px;
+}
+
+/* ---------- Ícones (SVG em /assets/icons pintados via máscara) ---------- */
+.icone {
+  display: inline-block;
+  width: 1.15em;
+  height: 1.15em;
+  flex: none;
+  background-color: currentColor;
+  -webkit-mask: var(--icone) center / contain no-repeat;
+          mask: var(--icone) center / contain no-repeat;
+}
+.icone--instagram { --icone: url("assets/icons/instagram.svg"); }
+.icone--tiktok    { --icone: url("assets/icons/tiktok.svg"); }
+.icone--twitch    { --icone: url("assets/icons/twitch.svg"); }
+.icone--discord   { --icone: url("assets/icons/discord.svg"); }
+.icone--spotify   { --icone: url("assets/icons/spotify.svg"); }
+.icone--github    { --icone: url("assets/icons/github.svg"); }
+.icone--linkedin  { --icone: url("assets/icons/linkedin.svg"); }
+.icone--copiar    { --icone: url("assets/icons/copy.svg"); }
+.icone--olho      { --icone: url("assets/icons/eye.svg"); }
+.icone--pin       { --icone: url("assets/icons/pin.svg"); }
+.icone--volume    { --icone: url("assets/icons/volume.svg"); }
+.icone--mudo      { --icone: url("assets/icons/mute.svg"); }
+
+/* ==========================================================
+   Splash (tela de entrada)
+   ========================================================== */
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  width: 100%;
+  padding: 24px;
+  border: 0;
+  /* Véu escuro + desfoque: o vídeo aparece borrado por trás */
+  background: rgba(2, 4, 10, 0.45);
+  -webkit-backdrop-filter: blur(16px) saturate(130%);
+          backdrop-filter: blur(16px) saturate(130%);
+  color: var(--texto);
+  font: inherit;
+  cursor: pointer;
+  transition: opacity 1s ease, visibility 1s, backdrop-filter 1s ease, -webkit-backdrop-filter 1s ease;
+}
+.splash:focus-visible { outline: none; }
+.splash:focus-visible .splash__avatar { outline: 2px solid var(--accent-2); outline-offset: 6px; }
+
+/* Foto com anéis pulsando */
+.splash__centro {
+  position: relative;
+  display: grid;
+  place-items: center;
+  transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.7s ease;
+}
+.splash__avatar {
+  position: relative;
+  z-index: 1;
+  width: 84px;
+  height: 84px;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  object-fit: cover;
+  background: #101426;
+  box-shadow: 0 0 24px var(--accent-55);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.splash__anel {
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--accent-2);
+  border-radius: 50%;
+  box-shadow: 0 0 12px var(--accent-55), inset 0 0 8px var(--accent-30);
+  animation: pulso 2.6s ease-out infinite;
+}
+.splash__anel--2 { animation-delay: 1.3s; }
+@keyframes pulso {
+  0%   { transform: scale(1);   opacity: 0.9; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+.splash__texto {
+  font-size: clamp(0.95rem, 3.6vw, 1.1rem);
+  letter-spacing: 0.3em;
+  text-transform: lowercase;
+  text-shadow: 0 0 14px var(--accent-55);
+  animation: respirar 2.6s ease-in-out infinite;
+  transition: letter-spacing 0.9s ease, opacity 0.6s ease;
+}
+.splash__dica {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  color: var(--texto-suave);
+  opacity: 0.7;
+  transition: opacity 0.4s ease;
+}
+@keyframes respirar {
+  0%, 100% { opacity: 0.45; }
+  50%      { opacity: 1; }
+}
+
+/* Hover: a foto "acende" */
+.splash:hover .splash__avatar {
+  transform: scale(1.06);
+  box-shadow: 0 0 34px var(--accent), 0 0 60px var(--accent-30);
+}
+.splash:hover .splash__texto { opacity: 1; animation-play-state: paused; }
+
+/* Saída: desfoque some, foto cresce e texto se espalha */
+.splash.saindo {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  -webkit-backdrop-filter: blur(0) saturate(100%);
+          backdrop-filter: blur(0) saturate(100%);
+}
+.splash.saindo .splash__centro { transform: scale(1.5); opacity: 0; }
+.splash.saindo .splash__texto { letter-spacing: 0.8em; opacity: 0; animation: none; }
+.splash.saindo .splash__dica { opacity: 0; }
+
+/* ==========================================================
+   Fundo (vídeo + overlay)
+   ========================================================== */
+.fundo {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+.fundo__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+.fundo__video.pronto { opacity: 1; }
+
+/* Player do YouTube como fundo: 16:9 sempre maior que a tela e centralizado.
+   O scale(1.2) esconde as bordas/título que o YouTube mostra. */
+.fundo__yt {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100vw;
+  height: 56.25vw;          /* 9/16 */
+  min-width: 177.78vh;      /* 16/9 */
+  min-height: 100vh;
+  border: 0;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(1.2);
+  transition: opacity 1.2s ease;
+}
+.fundo__yt.pronto { opacity: 1; }
+.fundo__overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 40%, rgba(5, 6, 13, 0.25), rgba(5, 6, 13, 0.8) 75%),
+    rgba(3, 4, 10, 0.45);
+}
+
+/* Canvas da neve */
+.neve {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* ==========================================================
+   Controle de volume
+   ========================================================== */
+.volume {
+  position: fixed;
+  top: max(14px, env(safe-area-inset-top));
+  left: max(14px, env(safe-area-inset-left));
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px 6px 6px;
+  border: 1px solid var(--borda-vidro);
+  border-radius: 999px;
+  background: var(--vidro);
+  -webkit-backdrop-filter: blur(12px);
+          backdrop-filter: blur(12px);
+}
+.volume__botao {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--texto);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+}
+.volume__botao:hover { background: rgba(255, 255, 255, 0.08); }
+.volume__botao:active { transform: scale(0.92); }
+
+.volume__slider {
+  width: 84px;
+  height: 4px;
+  accent-color: var(--accent);
+  cursor: pointer;
+  -webkit-appearance: none;
+          appearance: none;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent) var(--preenchido, 30%), rgba(255, 255, 255, 0.18) var(--preenchido, 30%));
+}
+.volume__slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: #fff; box-shadow: 0 0 8px var(--accent-55);
+}
+.volume__slider::-moz-range-thumb {
+  width: 14px; height: 14px; border: 0; border-radius: 50%;
+  background: #fff; box-shadow: 0 0 8px var(--accent-55);
+}
+
+/* ==========================================================
+   Palco + card principal (glassmorphism)
+   ========================================================== */
+.palco {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+  padding: 72px 16px;           /* igual em cima e embaixo = centro de verdade */
+  perspective: 1000px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.palco.visivel { opacity: 1; }
+
+/* Entrada em sequência: cada item com data-entrada surge depois do anterior
+   (--i define a ordem). "backwards" não trava o transform depois do fim,
+   então o hover dos ícones continua funcionando. */
+.palco.visivel [data-entrada] {
+  animation: surgir 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+  animation-delay: calc(0.35s + var(--i, 0) * 0.09s);
+}
+.palco.visivel .avatar[data-entrada] { animation-name: surgir-foto; }
+@keyframes surgir {
+  from { opacity: 0; transform: translateY(14px); filter: blur(6px); }
+}
+@keyframes surgir-foto {
+  from { opacity: 0; transform: scale(0.6); filter: blur(8px); }
+}
+
+.card {
+  position: relative;
+  width: min(100%, 420px);
+  padding: 20px 8px;
+  /* Sem caixa de vidro: tudo flutua direto sobre o vídeo.
+     A sombra nos textos garante leitura em cima de qualquer fundo. */
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 18px rgba(0, 0, 0, 0.6);
+  transform-style: preserve-3d;
+  transition: transform 0.25s ease-out;
+  will-change: transform;
+}
+
+/* ---------- Avatar com borda animada ---------- */
+.avatar {
+  position: relative;
+  width: 112px;
+  height: 112px;
+  margin: 0 auto 16px;
+  padding: 3px;
+  border-radius: 50%;
+  isolation: isolate;
+  overflow: hidden;              /* recorta o anel girando em círculo */
+  box-shadow: 0 0 26px var(--accent-55); /* brilho externo */
+}
+/* Anel de gradiente girando (só transform = leve) */
+.avatar::before {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  z-index: -1;
+  background: conic-gradient(var(--accent), var(--accent-2), transparent 55%, var(--accent));
+  animation: girar 4s linear infinite;
+}
+.avatar__img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #101426;
+  border: 3px solid #070912;
+}
+@keyframes girar { to { transform: rotate(1turn); } }
+
+/* ---------- Nome com glow + typewriter ---------- */
+.nome {
+  margin: 0;
+  min-height: 1.25em;
+  font-size: clamp(1.7rem, 7vw, 2.1rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  text-shadow:
+    0 0 8px var(--accent-55),
+    0 0 22px var(--accent-30),
+    0 0 42px var(--accent2-30);
+}
+.nome__cursor {
+  display: inline-block;
+  width: 2px;
+  height: 0.9em;
+  margin-left: 4px;
+  margin-right: -6px;          /* não ocupa espaço: o nome fica centralizado */
+  vertical-align: -0.08em;
+  background: var(--accent-2);
+  box-shadow: 0 0 8px var(--accent-2);
+  animation: cursor-piscar 1s steps(1) infinite;
+}
+.nome.digitado .nome__cursor { animation: cursor-piscar 1s steps(1) 3 forwards; }
+@keyframes cursor-piscar { 50% { opacity: 0; } }
+
+.uid {
+  margin-top: 4px;
+  font-size: 0.72rem;
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  letter-spacing: 0.18em;
+  color: var(--texto-suave);
+  opacity: 0.8;
+}
+.bio {
+  margin: 14px auto 0;
+  max-width: 30ch;
+  font-style: italic;
+  line-height: 1.5;
+  color: #dde2f7;
+}
+.local {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  font-size: 0.88rem;
+  color: var(--texto-suave);
+}
+.local .icone { color: var(--accent-2); }
+
+/* ==========================================================
+   Card do Discord
+   ========================================================== */
+.discord {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 22px auto 0;
+  text-align: left;
+}
+.discord__avatar { position: relative; flex: none; }
+.discord__avatar img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #101426;
+}
+.discord__bolinha {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 15px;
+  height: 15px;
+  border: 3px solid #0b0e1c;
+  border-radius: 50%;
+  background: #747f8d;
+}
+.discord__bolinha[data-status="online"]  { background: #3ba55d; }
+.discord__bolinha[data-status="idle"]    { background: #faa81a; }
+.discord__bolinha[data-status="dnd"]     { background: #ed4245; }
+.discord__bolinha[data-status="offline"] { background: #747f8d; }
+
+.discord__info { flex: 1; min-width: 0; }
+.discord__nome {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.discord__status,
+.discord__atividade {
+  font-size: 0.8rem;
+  color: var(--texto-suave);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.discord__atividade { margin-top: 2px; color: #d3daf2; }
+.discord__arte {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+/* ==========================================================
+   Redes sociais
+   ========================================================== */
+.redes__lista {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;                    /* celular: 6 ícones numa linha só */
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.redes__item { position: relative; }
+
+/* Cada ícone sobe e desce devagar, com atrasos diferentes */
+.redes__item { animation: flutuar 3.2s ease-in-out infinite; }
+.redes__item:nth-child(2) { animation-delay: -0.8s; }
+.redes__item:nth-child(3) { animation-delay: -1.6s; }
+.redes__item:nth-child(4) { animation-delay: -2.4s; }
+.redes__item:nth-child(5) { animation-delay: -1.2s; }
+.redes__item:nth-child(6) { animation-delay: -2s; }
+.redes__item:nth-child(7) { animation-delay: -0.4s; }
+@keyframes flutuar {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+
+.rede {
+  display: grid;
+  place-items: center;
+  width: 44px;               /* área de toque confortável, sem caixa visível */
+  height: 44px;
+  border-radius: 50%;
+  color: var(--texto);
+  font-size: 1.75rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 6px var(--accent-30));
+  transition: transform 0.2s ease, filter 0.25s ease, color 0.2s;
+}
+.rede:hover,
+.rede:focus-visible {
+  transform: scale(1.22);
+  color: #fff;
+  filter: drop-shadow(0 0 8px var(--accent)) drop-shadow(0 0 18px var(--accent-2));
+}
+/* Botão "copiar" do Spotify: selinho redondo no canto do ícone */
+.copiar {
+  position: absolute;
+  top: -4px;
+  right: -8px;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 2px solid #0b0e1c;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff;
+  font-size: 0.72rem;
+  box-shadow: 0 0 8px var(--accent-30);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s, background-color 0.2s;
+}
+.copiar:hover,
+.copiar:focus-visible {
+  transform: scale(1.15);
+  box-shadow: 0 0 14px var(--accent-55);
+}
+
+/* ==========================================================
+   Player da música
+   ========================================================== */
+.player {
+  /* Capa | título centralizado | botão  — e a barra por baixo, de ponta a ponta.
+     Capa e botão têm a mesma largura, então o texto fica no centro exato. */
+  display: grid;
+  grid-template-columns: 56px 1fr 56px;
+  grid-template-areas:
+    "capa titulo  botao"
+    "capa artista botao"
+    "barra barra  barra"
+    "tempos tempos tempos";
+  align-items: center;
+  column-gap: 12px;
+  width: 100%;
+  max-width: 340px;
+  margin: 26px auto 0;
+  /* Sem caixa: flutua direto sobre o vídeo, como os ícones
+     (a sombra do texto vem do .card) */
+  text-align: left;
+}
+
+/* Capa e botão sobem e descem devagar, no mesmo ritmo dos ícones */
+.player__capa  { animation: flutuar 3.2s ease-in-out infinite; }
+.player__botao { animation: flutuar 3.2s ease-in-out -1.6s infinite; }
+
+/* Capa: "respira" com brilho azul enquanto toca; apaga ao pausar */
+.player__capa {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  flex: none;
+}
+.player__capa img {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  object-fit: cover;
+  background: #101426;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.7);
+  transform: scale(0.9);
+  filter: brightness(0.55);
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.5s ease, box-shadow 0.5s ease;
+}
+.player.tocando .player__capa img {
+  transform: scale(1);
+  filter: none;
+  animation: capa-brilho 2.8s ease-in-out infinite;
+}
+@keyframes capa-brilho {
+  0%, 100% { box-shadow: 0 6px 18px rgba(0, 0, 0, 0.7), 0 0 10px var(--accent-30); }
+  50%      { box-shadow: 0 6px 18px rgba(0, 0, 0, 0.7), 0 0 24px var(--accent-55); }
+}
+
+/* Equalizador no canto da capa */
+.player__eq {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+  padding: 2px 3px;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.55);
+}
+.player__eq i {
+  display: block;
+  width: 3px;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--accent-2);
+  transform: scaleY(0.25);
+  transform-origin: bottom;
+  transition: transform 0.3s ease;
+}
+.player.tocando .player__eq i { animation: eq 0.9s ease-in-out infinite; }
+.player.tocando .player__eq i:nth-child(2) { animation-duration: 0.7s; animation-delay: -0.3s; }
+.player.tocando .player__eq i:nth-child(3) { animation-duration: 1.1s; animation-delay: -0.5s; }
+@keyframes eq {
+  0%, 100% { transform: scaleY(0.3); }
+  50%      { transform: scaleY(1); }
+}
+
+.player__info { display: contents; } /* filhos entram direto no grid */
+.player__capa     { grid-area: capa; }
+.player__titulo   { grid-area: titulo; align-self: end; }
+.player__artista  { grid-area: artista; align-self: start; }
+.player__progresso { grid-area: barra; }
+.player__tempos   { grid-area: tempos; }
+.player__botao    { grid-area: botao; justify-self: center; }
+.player__titulo,
+.player__artista { min-width: 0; text-align: center; }
+.player__titulo,
+.player__artista {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.player__titulo { font-size: 0.92rem; font-weight: 600; }
+.player__artista { font-size: 0.76rem; color: var(--texto-suave); }
+
+/* Barra de progresso (arrastável) */
+.player__progresso {
+  display: block;
+  width: 100%;
+  height: 4px;
+  margin: 12px 0 4px;
+  border-radius: 999px;
+  cursor: pointer;
+  -webkit-appearance: none;
+          appearance: none;
+  background: linear-gradient(90deg, var(--accent) var(--progresso, 0%), rgba(255, 255, 255, 0.28) var(--progresso, 0%));
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+.player__progresso::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: #fff; box-shadow: 0 0 8px var(--accent);
+  transform: scale(0); transition: transform 0.2s ease;
+}
+.player__progresso::-moz-range-thumb {
+  width: 10px; height: 10px; border: 0; border-radius: 50%;
+  background: #fff; box-shadow: 0 0 8px var(--accent);
+}
+.player:hover .player__progresso::-webkit-slider-thumb,
+.player__progresso:focus-visible::-webkit-slider-thumb { transform: scale(1); }
+
+.player__tempos {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--texto-suave);
+}
+
+/* Botão tocar/pausar: os dois ícones trocam girando */
+.player__botao {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: #fff;
+  font-size: 1.7rem;
+  cursor: pointer;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 8px var(--accent-55));
+  transition: filter 0.25s ease;
+}
+.player__botao:hover { filter: drop-shadow(0 0 8px var(--accent)) drop-shadow(0 0 18px var(--accent-2)); }
+.player__botao:hover .icone { scale: 1.18; }
+.player__botao:active .icone { scale: 0.85; }
+.player__botao .icone {
+  position: absolute;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.25s ease, scale 0.2s ease;
+}
+.icone--play  { --icone: url("assets/icons/play.svg"); }
+.icone--pause { --icone: url("assets/icons/pause.svg"); }
+/* Pausado: mostra o "play" */
+.player__botao .icone--pause { opacity: 0; transform: rotate(-90deg) scale(0.4); }
+.player__botao .icone--play  { opacity: 1; transform: none; }
+/* Tocando: mostra o "pause" */
+.player.tocando .player__botao .icone--pause { opacity: 1; transform: none; }
+.player.tocando .player__botao .icone--play  { opacity: 0; transform: rotate(90deg) scale(0.4); }
+
+/* ==========================================================
+   Rodapé / contador
+   ========================================================== */
+.rodape { margin-top: 18px; }
+/* Sem contador (serviço fora ou ainda sem visitas): some o rodapé e o espaço vazio */
+.rodape:has(> .views[hidden]) { display: none; }
+.views {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--texto-suave);
+}
+
+/* ==========================================================
+   Toast ("Copiado!")
+   ========================================================== */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: max(24px, env(safe-area-inset-bottom));
+  z-index: 60;
+  padding: 10px 18px;
+  border: 1px solid var(--accent-55);
+  border-radius: 999px;
+  background: rgba(10, 12, 26, 0.88);
+  box-shadow: 0 0 20px var(--accent-30);
+  font-size: 0.9rem;
+  opacity: 0;
+  transform: translate(-50%, 12px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: none;
+}
+.toast.mostrar { opacity: 1; transform: translate(-50%, 0); }
+
+/* ==========================================================
+   Cursor personalizado (só aparece quando ativado pelo JS)
+   ========================================================== */
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 70;
+  width: 26px;
+  height: 26px;
+  margin: -13px 0 0 -13px;
+  border: 1.5px solid var(--accent-55);
+  border-radius: 50%;
+  box-shadow: 0 0 12px var(--accent-30);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s, width 0.2s, height 0.2s, margin 0.2s;
+}
+.cursor.ativo { opacity: 1; }
+.cursor.sobre-link { width: 40px; height: 40px; margin: -20px 0 0 -20px; border-color: var(--accent-2); }
+.rastro {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 69;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: var(--accent-2);
+  box-shadow: 0 0 8px var(--accent);
+  pointer-events: none;
+}
+
+.noscript {
+  position: fixed; inset: auto 0 20px; z-index: 200;
+  text-align: center; color: var(--texto-suave);
+}
+
+/* ==========================================================
+   Telas maiores
+   ========================================================== */
+@media (min-width: 480px) {
+  .avatar { width: 116px; height: 116px; }
+  .volume__slider { width: 110px; }
+}
+
+/* Notebook / desktop: um pouco maior que no celular, sem exagero */
+@media (min-width: 900px) {
+  .card { width: min(100%, 440px); }
+  .splash__avatar { width: 104px; height: 104px; }
+  .splash__texto { font-size: 1.25rem; }
+  .splash__dica { font-size: 0.8rem; }
+  .avatar { width: 118px; height: 118px; }
+  .nome { font-size: 2.1rem; }
+  .bio { font-size: 1rem; }
+  .discord { margin-top: 20px; }
+  .rede { width: 48px; height: 48px; font-size: 1.9rem; }
+  .redes__lista { gap: 18px; }
+}
+
+/* Celulares bem estreitos (320px): ícones um pouco menores para caber numa linha */
+@media (max-width: 340px) {
+  .redes__lista { gap: 4px; }
+  .rede { width: 40px; height: 40px; font-size: 1.55rem; }
+  .player { column-gap: 8px; }
+}
+
+/* Celulares baixos (iPhone SE etc.): compacta para caber sem rolar */
+@media (max-height: 700px) {
+  .palco { padding: 60px 16px 16px; }
+  .card { padding: 8px 8px 12px; }
+  .avatar { width: 96px; height: 96px; margin-bottom: 10px; }
+  .bio { margin-top: 8px; }
+  .local { margin-top: 6px; }
+  .discord { margin-top: 14px; }
+  .redes__lista { margin-top: 14px; }
+  .player { margin-top: 16px; }
+}
+
+/* ==========================================================
+   Acessibilidade: movimento reduzido
+   Desliga animações contínuas; a neve/tilt/cursor são
+   desligados no próprio script.js.
+   ========================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  *,
+  *::before,
+  *::after { animation-delay: 0s !important; }
+  .splash__texto { opacity: 1; }
+}
