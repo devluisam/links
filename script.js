@@ -766,7 +766,11 @@ function renderizarDiscord(d) {
 async function atualizarDiscord() {
   if (document.hidden && discordCarregado) return; // aba em segundo plano: não gasta requisição
   try {
-    const resposta = await fetch(`https://api.lanyard.rest/v1/users/${CONFIG.discordId}`, { cache: "no-store" });
+    // Desiste em 6 s: a API às vezes demora ~10 s (tenta de novo em 30 s)
+    const resposta = await fetch(`https://api.lanyard.rest/v1/users/${CONFIG.discordId}`, {
+      cache: "no-store",
+      signal: AbortSignal.timeout ? AbortSignal.timeout(6000) : undefined,
+    });
     const json = await resposta.json();
     if (!json.success) throw new Error(json.error && json.error.message);
     renderizarDiscord(json.data);
