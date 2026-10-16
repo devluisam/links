@@ -39,7 +39,7 @@ const CONFIG = {
     twitch: "",
     discord: "https://discord.com/users/1168072175589281865",
     github: "https://github.com/devluisam",
-    linkedin: "https://www.linkedin.com/in/luis-henrique-94a6183b3",
+    linkedin: "https://www.linkedin.com/in/devluisam",
     spotify: "https://open.spotify.com/user/31k2rgfsc5dj4cqoaobr3q4s3xc4",
   },
 
